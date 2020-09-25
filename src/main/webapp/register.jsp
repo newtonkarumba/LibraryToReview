@@ -37,28 +37,28 @@
 
               <!-- This is the beginning of the registration form-->
 
-              <form class="user" method="post" action="memberServlet">
+              <form method="post" action="memberServlet">
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="text" class="form-control form-control-user" id="name" placeholder=" name">
+                    <input type="text" class="form-control form-control-user" id="name" name=" name">
                   </div>
                   <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-user" id="address" placeholder="address">
+                    <input type="text" class="form-control form-control-user" id="address" name="address">
                   </div>
                 </div>
                           <div class="form-group">
-                            <input type="text" class="form-control form-control-user" id="id" placeholder="id">
+                            <input type="text" class="form-control form-control-user" id="id" name="id">
                           </div>
                           <div class="form-group row">
                             <div class="col-sm-6 mb-3 mb-sm-0">
-                              <input type="text" class="form-control form-control-user" id="regNo" placeholder="regNo">
+                              <input type="text" class="form-control form-control-user" id="regNo" namer="regNo">
                             </div>
                             <div class="col-sm-6">
-                              <input type="date" class="form-control form-control-user" id="exipryDate" placeholder="expiryDate">
+                              <input type="date" class="form-control form-control-user" id="exipryDate" name="expiryDate">
                             </div>
                             </div>
-                            <a href="tables.jsp" class="btn btn-primary btn-user btn-block">
-                              Register Account
+                            <a href="tables.jsp"> <button type="submit" class="btn btn-primary btn-user btn-block">
+                              Register Account</button>
                             </a>
 
                                     <div class="text-center">

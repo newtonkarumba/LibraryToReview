@@ -1,3 +1,11 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*" %>
+<%@page import="com.assignment.utilities.*" %>
+<%@page import="com.assignment.model.*" %>
+<%@page import="com.assignment.servlets.*" %>
+<%@page import="javax.sql.DataSource" %>
+<%@page import="javax.annotation.Resource" %>
+<%@page import="javax.naming.*" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,8 +87,8 @@
             <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Available Tables:</h6>
-                    <a class="collapse-item" href="#">Members</a>
-                    <a class="collapse-item" href="#">Books</a>
+                    <a class="collapse-item" href="tables.jsp">Members</a>
+                    <a class="collapse-item" href="bookstable.jsp">Books</a>
 
                 </div>
             </div>
@@ -91,7 +99,7 @@
 
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+         <!--   <button class="rounded-circle border-0" id="sidebarToggle"></button> -->
         </div>
 
     </ul>
@@ -126,6 +134,7 @@
                 <!-- Page Heading -->
                 <h1 class="h3 mb-2 text-gray-800">Books</h1>
                 <p class="mb-4">These are all the books in the database</p>
+            <a href="addbook.jsp" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Add Book</a>
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
@@ -134,79 +143,70 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>BookId</th>
-                                    <th>Author</th>
-                                    <th>Title</th>
-                                    <th>Price</th>
-                                    <th>Available</th>
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>BookId</th>
+            <th>Author</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Available</th>
 
-                                </tr>
-                                </thead>
-                                <tfoot>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>BookId</th>
-                                    <th>Author</th>
-                                    <th>Title</th>
-                                    <th>Price</th>
-                                    <th>Available</th>
-                                </tr>
-                                </tfoot>
-                                <tbody>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>Pledinburgh</td>
-                                    <td>$61</td>
-                                    <td>Available</td>
+        </tr>
+        </thead>
+<%
+       InitialContext context = new InitialContext() ;
+    DataSource dataSource = (DataSource)context.lookup("java:jboss/datasources/LibraryAppDS");
+   try
+   {
+       Connection connection = dataSource.getConnection();
+       String query = "Select * from book";
+       Statement statement = connection.createStatement();
+       ResultSet result = statement.executeQuery(query);
+       int count = 0;
+       while(result.next())
+       {
+       count += 1;
+       %>
 
-                                </tr>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>Pledinburgh</td>
-                                    <td>$61</td>
-                                    <td>Available</td>
+        <tbody>
+<tr>
 
-                                </tr>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>Pledinburgh</td>
-                                    <td>$61</td>
-                                    <td>Available</td>
+         <td><%=result.getString("name")%></td>
+         <td><%=result.getString("bookId")%></td>
+         <td><%=result.getString("author")%></td>
+         <td><%=result.getString("title")%></td>
+         <td><%=result.getString("price")%></td>
+         <td><%=result.getString("Available")%></td>
 
-                                </tr>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>Pledinburgh</td>
-                                    <td>$61</td>
-                                    <td>Available</td>
+</tr>
+     <%
+         }
+     }
+     catch(Exception ex)
+     {
+         out.println("Exception:" +ex.getMessage());
+         ex.printStackTrace();
+     }
+     %>
 
-                                </tr>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>Pledinburgh</td>
-                                    <td>$61</td>
-                                    <td>Available</td>
-                                </tr>
 
-                                </tbody>
-                            </table>
-                        </div>
+        </tbody>
+    <tfoot>
+        <tr>
+            <th>Name</th>
+            <th>BookId</th>
+            <th>Author</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Available</th>
+        </tr>
+    </tfoot>
+</table>
                     </div>
                 </div>
+            </div>
 
             </div>
             <!-- /.container-fluid -->

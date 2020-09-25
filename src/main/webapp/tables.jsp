@@ -1,3 +1,11 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*" %>
+<%@page import="com.assignment.utilities.*" %>
+<%@page import="com.assignment.model.*" %>
+<%@page import="com.assignment.servlets.*" %>
+<%@page import="javax.sql.DataSource" %>
+<%@page import="javax.annotation.Resource" %>
+<%@page import="javax.naming.*" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,8 +87,8 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Available Tables:</h6>
-            <a class="collapse-item" href="tables.html">Members</a>
-            <a class="collapse-item" href="bookstable.html">Books</a>
+            <a class="collapse-item" href="tables.jsp">Members</a>
+            <a class="collapse-item" href="bookstable.jsp">Books</a>
 
           </div>
         </div>
@@ -108,7 +116,7 @@
 
           <!-- Sidebar Toggle (Topbar) -->
           <form class="form-inline">
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
               <i class="fa fa-bars"></i>
             </button>
           </form>
@@ -126,8 +134,9 @@
           <!-- Page Heading -->
           <h1 class="h3 mb-2 text-gray-800">Tables</h1>
           <p class="mb-4">These are all the members in the table</p>
+          <a href="addmember.jsp" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Add Member</a>
 
-          <!-- DataTales Example -->
+          <!-- DataTables Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h6 class="m-0 font-weight-bold text-primary">Members</h6>
@@ -142,45 +151,55 @@
                       <th>Id</th>
                       <th>RegNo</th>
                       <th>expiryDate</th>
+                    </tr>
+                    </thead>
+                <%
+                       InitialContext context = new InitialContext() ;
+                    DataSource dataSource = (DataSource)context.lookup("java:jboss/datasources/LibraryAppDS");
+                   try
+                   {
+                       Connection connection = dataSource.getConnection();
+                       String query = "Select * from member";
+                       Statement statement = connection.createStatement();
+                       ResultSet result = statement.executeQuery(query);
+                       int count = 0;
+                       while(result.next())
+                       {
+                       count += 1;
+                       %>
 
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                      <th>Name</th>
-                      <th>Address</th>
-                      <th>Id</th>
-                      <th>RegNo</th>
-                      <th>expiryDate</th>
-                    </tr>
-                  </tfoot>
+
                   <tbody>
-                    <tr>
-                      <td>Tiger Nixon</td>
-                      <td>System Architect</td>
-                      <td>Edinburgh</td>
-                      <td>61</td>
-                      <td>2011/04/25</td>
+                   <tr>
 
-                    </tr>
-                    <tr>
-                      <td>Garrett Winters</td>
-                      <td>Accountant</td>
-                      <td>Tokyo</td>
-                      <td>63</td>
-                      <td>2011/07/25</td>
+                                     <td><%=result.getString("name")%></td>
+                                     <td><%=result.getString("address")%></td>
+                                     <td><%=result.getString("id")%></td>
+                                     <td><%=result.getString("regNo")%></td>
+                                     <td><%=result.getString("expiryDate")%></td>
 
-                    </tr>
-                    <tr>
-                      <td>Ashton Cox</td>
-                      <td>Junior Technical Author</td>
-                      <td>San Francisco</td>
-                      <td>66</td>
-                      <td>2009/01/12</td>
+                   </tr>
+                                 <%
+                                     }
+                                 }
+                                 catch(Exception ex)
+                                 {
+                                     out.println("Exception:" +ex.getMessage());
+                                     ex.printStackTrace();
+                                 }
+                                 %>
 
-                    </tr>
 
                   </tbody>
+                    <tfoot>
+                                      <tr>
+                                        <th>Name</th>
+                                        <th>Address</th>
+                                        <th>Id</th>
+                                        <th>RegNo</th>
+                                        <th>expiryDate</th>
+                                      </tr>
+                                    </tfoot>
                 </table>
               </div>
             </div>

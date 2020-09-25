@@ -1,29 +1,25 @@
-package com.assignment.servlets.unrelated;
+package com.assignment.servlets;
 
 
-import com.assignment.bean.OrganizationBean;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.assignment.bean.OrganizationBeanI;
 import com.assignment.model.Organization;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.ServletContext;
+import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import com.assignment.annotation.SaveToDb;
-import com.assignment.bean.OrganizationBeanI;
-import org.apache.commons.beanutils.BeanUtils;
-
-import javax.inject.Inject;
-
 
 @WebServlet("/organization")
 public class OrganizationServlet extends HttpServlet {
 
-    @Inject @SaveToDb
+    @EJB
     private OrganizationBeanI organizationBean;
 
     @Inject
@@ -31,28 +27,37 @@ public class OrganizationServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        ServletContext scx = getServletContext();
-        Connection dbConnection = (Connection) scx.getAttribute("dbConnection");
-        resp.setContentType("text/plain");
-
         ObjectMapper mapper = new ObjectMapper();
-        resp.getWriter().print(mapper.writeValueAsString(organizationBean.list(dbConnection)));
+        if (organization != null && StringUtils.isNotBlank(organization.getAction())
+                && organization.getAction().equalsIgnoreCase("load") && organization.getId() != 0)
+            resp.getWriter().print(mapper.writeValueAsString(organizationBean.load(organization.getId())));
+        else
+            resp.getWriter().print(mapper.writeValueAsString(organizationBean.list()));
 
     }
 
     protected  void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ServletContext scx = getServletContext();
-        Connection dbConnection = (Connection) scx.getAttribute("dbConnection");
 
         try {
-            BeanUtils.populate (organization, request.getParameterMap());
+            BeanUtils.populate(organization, request.getParameterMap());
+            response.getWriter().print(organizationBean.add(organization));
 
         }catch (Exception ex){
             System.out.println(ex.getCause().getMessage());
-
         }
 
-        response.getWriter().print(organizationBean.add(dbConnection, organization));
+    }
+
+    protected  void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        try {
+            BeanUtils.populate(organization, request.getParameterMap());
+
+            response.getWriter().print(organizationBean.delete(organization.getId()));
+
+        }catch (Exception ex){
+            System.out.println(ex.getCause().getMessage());
+        }
 
     }
 
